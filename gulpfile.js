@@ -62,7 +62,7 @@ gulp.task('browsersync', done => {
   const middleWares = [];
   if (config && config.apiUrl) {
     const proxyOpt = url.parse(config.apiUrl);
-    proxyOpt.route = '/api';
+    proxyOpt.route = proxyOpt.path;
     middleWares.push(proxy(proxyOpt));
   }
   browserSync.init({
@@ -112,5 +112,10 @@ gulp.task('watch', done => {
 // DEV SERVER TASK
 ///////////////////////////////
 gulp.task('serve', ['watch', 'webpack', 'browsersync']);
+
+///////////////////////////////
+// DEFAULT TASK
+///////////////////////////////
+gulp.task('default', ['serve']);
 
 //TODO: bundle [react, jquery, vue, backbone...] to library.js without pass webpack;

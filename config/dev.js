@@ -3,5 +3,6 @@
  */
 
 module.exports = {
-  apiUrl: 'http://localhost:3001/api/v1'
+  appName: 'frontend boilerplate',
+  apiUrl: 'http://localhost:3001/api/v1',
 };

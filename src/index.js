@@ -1,8 +1,17 @@
 import './index.scss';
+import _ from 'lodash';
 
-/* eslint no-console: 0 */
+const {omit} = _;
+
+const obj = {
+  foo: 'bar',
+  bar: 'foo',
+  msg: 'Hello! Tong~'
+};
+
 function hello () {
-  console.log('hello!~');
+  const ele = document.getElementById('hello');
+  ele.innerHTML = omit(obj, 'foo').msg;
 }
 
 hello();

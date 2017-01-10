@@ -2,12 +2,11 @@ const gulp = require('gulp');
 const browserSync = require('browser-sync');
 const proxy = require('proxy-middleware');
 const url = require('url');
-const hlpCnf = require('../helper.js');
 
 /* eslint-env node */
-const env = process.env.NODE_ENV || 'dev';
+const env = process.env.NODE_ENV || 'development';
 const target = process.env.TARGET || 'browser';
-const config = require('../helper.js');
+const config = require(`../${env}.js`);
 
 const addProxy = middlewareArr => {
   if (config && config.proxies) {
@@ -26,12 +25,12 @@ gulp.task('browsersync', done => {
   addProxy(middleWares);
 
   browserSync.init({
-    port: hlpCnf.port || 9000,
+    port: config.port || 9000,
     ui: {
-      port: hlpCnf.port ? hlpCnf.port + 1 : 9001
+      port: config.port ? config.port + 1 : 9001
     },
     server: {
-      baseDir: env == 'dev' ? ['.tmp', 'src'] : ['build'],
+      baseDir: env == 'development' ? ['.tmp', 'src'] : ['build'],
       middleware: middleWares
     },
     ghostMode: {
@@ -39,7 +38,7 @@ gulp.task('browsersync', done => {
       forms: true,
       scroll: false
     },
-    open: env == 'dev' && target == 'browser'
+    open: env == 'development' && target == 'browser'
   });
   done();
 });

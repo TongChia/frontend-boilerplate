@@ -1,3 +1,5 @@
+$env: red !default;
+
 body {
-  background: lightcyan;
+  background: $env;
 }

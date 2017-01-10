@@ -1,6 +1,6 @@
 {
   "name": "frontend-boilerplate",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "frontend boilerplate",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "cross-env NODE_ENV=production gulp webpack",
     "serve": "gulp serve",
     "clean": "gulp clean",
-    "test": "eslint",
+    "lint": "eslint",
     "gulp": "gulp",
     "webpack": "webpack"
   },
@@ -27,7 +27,8 @@
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-eslint": "^3.0.1",
     "gulp-util": "^3.0.7",
-    "html-webpack-plugin": "^2.24.1",
+    "html-webpack-plugin": "^2.26.0",
+    "lodash": "^4.17.4",
     "mocha": "^3.2.0",
     "node-sass": "^4.0.0",
     "postcss-cssnext": "^2.9.0",
@@ -35,7 +36,7 @@
     "proxy-middleware": "^0.15.0",
     "sass-loader": "^4.1.0",
     "style-loader": "^0.13.1",
-    "webpack": "^2.2.0-rc.1"
+    "webpack": "^2.2.0-rc.3"
   },
   "dependencies": {
   }

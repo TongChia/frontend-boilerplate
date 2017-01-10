@@ -1,14 +1,8 @@
 const webpack = require('webpack');
 const cssnext = require('postcss-cssnext');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const Vendors = require('../helper/vendors');
 const base = require('./base');
-
-// const manifest = path.join('.tmp/', 'vendor.manifest.json');
-const v = new Vendors();
-const list = v.getManifest();
-const isDll = list.length > 0;
-let headScript = '';
+const isDll = !!process.env.MANIFESTS;
 
 const conf = Object.assign({}, base, {
   plugins: [
@@ -21,6 +15,11 @@ const conf = Object.assign({}, base, {
       options: {
         postcss: () => [cssnext]
       },
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Web App',
+      template: 'src/index.html',
+      filename: 'index.html',
     })
   ],
   cache: true,
@@ -29,7 +28,8 @@ const conf = Object.assign({}, base, {
 });
 
 if (isDll) {
-  list.forEach(manifest => {
+  const manifests = process.env.MANIFESTS.split(',');
+  manifests.forEach(manifest => {
     manifest = './.tmp/' + manifest;
     conf.plugins.unshift(
       new webpack.DllReferencePlugin({
@@ -38,18 +38,16 @@ if (isDll) {
       })
     );
   });
-
-  headScript = v.getBundleJsTags().join('\r\n  ');
 }
 
-conf.plugins.push(
-  new HtmlWebpackPlugin({
-    title: 'Web App',
-    headScript,
-    template: 'src/index.html',
-    filename: 'index.html',
-    // chunks: ['app'],
-  })
-);
+// conf.plugins.push(
+//   new HtmlWebpackPlugin({
+//     title: 'Web App',
+//     headScript,
+//     template: 'src/index.html',
+//     filename: 'index.html',
+//     // chunks: ['app'],
+//   })
+// );
 
 module.exports = conf;

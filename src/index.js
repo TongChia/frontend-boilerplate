@@ -1,7 +1,7 @@
 import './index.scss';
 import _ from 'lodash';
 
-const {omit} = _;
+// const {omit} = _;
 
 const obj = {
   foo: 'bar',
@@ -11,7 +11,7 @@ const obj = {
 
 function hello () {
   const ele = document.getElementById('hello');
-  ele.innerHTML = omit(obj, 'foo').msg;
+  ele.innerHTML = obj.msg;
 }
 
 hello();

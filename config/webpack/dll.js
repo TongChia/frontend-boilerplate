@@ -1,18 +1,17 @@
 const webpack = require('webpack');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-const Vendors = require('../helper/vendors');
-const hlpCnf = require('../helper');
-const pkgCnf = require('../../package.json');
+const base = require('./base');
+const env = process.env.NODE_ENV || 'development';
+const isDev = env == 'development';
+const config = require(`../${env}`);
 
-const env = process.env.NODE_ENV || 'dev';
-const isDev = env == 'dev';
-const v = new Vendors(hlpCnf, pkgCnf);
+const defaultOutName = '[name].[hash:8]';
 
-module.exports = {
-  entry: v.getEffectiveModules(),
+module.exports = Object.assign({}, base, {
+  entry: config.dll_entry,
   output: {
     path: (env == 'production') ? 'build' : '.tmp',
-    filename: (env == 'dev') ? '[name].bundle.js' : '[name].[hash:8].js',
+    // filename: (env == 'dev') ? '[name].bundle.js' : '[name].[hash:8].js',
+    filename: `${defaultOutName}.dll.js`,
     library: '[name]_[hash]',
   },
   plugins: [
@@ -23,9 +22,9 @@ module.exports = {
     }),
     new webpack.DllPlugin({
       name: '[name]_[hash]',
-      path: '.tmp/[name].manifest.json',
+      path: `.tmp/${defaultOutName}.json`,
       context: '.',
     }),
   ],
   devtool: isDev ? 'source-map' : ''
-};
+});

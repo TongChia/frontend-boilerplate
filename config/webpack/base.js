@@ -1,5 +1,6 @@
 // const path = require('path');
 const env = process.env.NODE_ENV || 'development';
+const config = require(`../${env}.js`);
 
 module.exports = {
   module: {
@@ -71,13 +72,10 @@ module.exports = {
     },
   },
   entry: {
-    'app': './src/index.js',
-    // 'electron': './src/index.electron.js',
-    // 'cordova': './src/index.cordova.js',
+    'index': `${config.src}/index.js`,
   },
   output: {
-    path: './.tmp',
-    filename: '[name].bundle.js'
+    path: config.out,
   },
   cache: false,
 };

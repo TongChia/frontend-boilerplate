@@ -1,7 +1,4 @@
 import './index.scss';
-import _ from 'lodash';
-
-// const {omit} = _;
 
 const obj = {
   foo: 'bar',

@@ -43,43 +43,55 @@ const ensureDllEntry = (entries, dependencies) => {
   return entries;
 };
 
-const changeHandler = done => (err, stats) => {
-  if (err) {
-    gutil.log(gutil.colors.red('Webpack'), err.toString());
-  }
-
-  gutil.log(`Consoled '${gutil.colors.cyan('webpack:vendor')}'...\r\n`, stats.toString(webpackLogOptions));
-
-  if (done) {
-    done();
-    done = null;
-  }
-};
-
-const bundleVendor = done => {
+const vendorCompiler = done => {
+  process.env.DLL_FILES = '';
+  const dllFiles = [];
   const dllCnf = require('../webpack/dll');
   const pkgCnf = require('../../package.json');
-  const solveCnf = Object.assign({}, dllCnf, {entry: ensureDllEntry(dllCnf.entry, pkgCnf.dependencies)});
-  const compiler = webpack(solveCnf, changeHandler(done));
+  const entry = ensureDllEntry(dllCnf.entry, pkgCnf.dependencies);
+
+  if (_.isEmpty(entry)) {
+    gutil.log('None of dll-libraries installed!');
+    return done();
+  }
+
+  const compiler = webpack(Object.assign(dllCnf, {entry}), err => {
+    if (err)
+      gutil.log(gutil.colors.red('Webpack'), err.toString());
+  });
 
   compiler.plugin('after-emit', (compilation, callback) => {
     Object.keys(compilation.assets).forEach(function (outName) {
       if (compilation.assets[outName].emitted && path.extname(outName) != '.map') {
-        const manifest = outName.replace('dll.js', 'json')
-        if (process.env.MANIFESTS)
-          process.env.MANIFESTS += ',' + manifest;
-        else
-          process.env.MANIFESTS = manifest;
+        dllFiles.push(outName);
       }
     });
     callback();
   });
+
+  compiler.plugin('done', stats => {
+    process.env.DLL_FILES = dllFiles.join(',');
+    gutil.log(`Consoled '${gutil.colors.cyan('webpack:vendor')}'...\r\n`, stats.toString(webpackLogOptions));
+    done();
+  });
 };
 
-const bundleApp = done =>
-  webpack(require('../../webpack.config'), changeHandler(done));
+const appCompiler = done => {
+  const appCnf = require('../../webpack.config');
+  webpack(appCnf, (err, stats) => {
+    if (err) {
+      gutil.log(gutil.colors.red('Webpack'), err.toString());
+    }
 
-gulp.task('webpack:vendor', bundleVendor);
-gulp.task('webpack:app', bundleApp);
+    gutil.log(`Consoled '${gutil.colors.cyan('webpack:app')}'...\r\n`, stats.toString(webpackLogOptions));
+
+    if (done) {
+      done();
+      done = null;
+    }
+  });
+};
+gulp.task('webpack:vendor', vendorCompiler);
+gulp.task('webpack:app', appCompiler);
 
 gulp.task('webpack', gulp.series('webpack:vendor', 'webpack:app'));

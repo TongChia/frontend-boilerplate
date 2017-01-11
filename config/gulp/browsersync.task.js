@@ -3,7 +3,6 @@ const browserSync = require('browser-sync');
 const proxy = require('proxy-middleware');
 const url = require('url');
 
-/* eslint-env node */
 const env = process.env.NODE_ENV || 'development';
 const target = process.env.TARGET || 'browser';
 const config = require(`../${env}.js`);
@@ -25,12 +24,12 @@ gulp.task('browsersync', done => {
   addProxy(middleWares);
 
   browserSync.init({
-    port: config.port || 9000,
+    port: config.port,
     ui: {
-      port: config.port ? config.port + 1 : 9001
+      port: config.port + 1
     },
     server: {
-      baseDir: env == 'development' ? ['.tmp', 'src'] : ['build'],
+      baseDir: [config.out, config.src],
       middleware: middleWares
     },
     ghostMode: {

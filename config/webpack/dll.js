@@ -7,7 +7,7 @@ const config = require(`../${env}`);
 const defaultOutName = '[name].[hash:8]';
 
 module.exports = Object.assign({}, base, {
-  entry: config.dll_entry,
+  entry: config.dllEntry,
   output: {
     path: (env == 'production') ? 'build' : '.tmp',
     // filename: (env == 'dev') ? '[name].bundle.js' : '[name].[hash:8].js',
@@ -22,7 +22,7 @@ module.exports = Object.assign({}, base, {
     }),
     new webpack.DllPlugin({
       name: '[name]_[hash]',
-      path: `.tmp/${defaultOutName}.json`,
+      path: `.tmp/${defaultOutName}.manifest.json`,
       context: '.',
     }),
   ],

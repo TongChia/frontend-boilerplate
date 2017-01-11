@@ -36,8 +36,7 @@
     "proxy-middleware": "^0.15.0",
     "sass-loader": "^4.1.0",
     "style-loader": "^0.13.1",
-    "webpack": "^2.2.0-rc.3"
+    "webpack": "^2.2.0-rc.4"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

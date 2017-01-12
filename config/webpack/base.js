@@ -72,7 +72,7 @@ module.exports = {
     },
   },
   entry: {
-    'index': `${config.src}/index.js`,
+    'app': `${config.src}/app.js`,
   },
   output: {
     path: config.out,

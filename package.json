@@ -4,11 +4,11 @@
   "description": "frontend boilerplate",
   "main": "index.js",
   "scripts": {
-    "start": "gulp serve",
-    "build": "cross-env NODE_ENV=production gulp webpack",
+    "start": "npm run serve",
     "serve": "gulp serve",
+    "build": "cross-env NODE_ENV=production gulp webpack",
     "clean": "gulp clean",
-    "lint": "eslint",
+    "lint": "gulp eslint",
     "gulp": "gulp",
     "webpack": "webpack"
   },

@@ -7,6 +7,8 @@ module.exports = {
   src: path.resolve(__dirname, '../src'),
   out: path.resolve(__dirname, '../.tmp'),
 
+  lang: 'en',
+
   /**
    * Simple dll entries.
    * This option will bundle modules to a signed file.

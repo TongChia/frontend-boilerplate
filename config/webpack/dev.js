@@ -23,6 +23,7 @@ const plugins = [
   }),
   new HtmlWebpackPlugin({
     title: config.appName,
+    lang: config.lang,
     dll: dllFiles,
     template: `${config.src}/index.html`,
     filename: 'index.html',

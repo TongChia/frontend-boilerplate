@@ -12,7 +12,6 @@ const isWatch = !!process.env.WATCH;
 const isDll = !!process.env.DLL_FILES;
 const dllFiles = isDll ? process.env.DLL_FILES.split(',') : [];
 
-const entry = base.entry;
 const cache = isDev;
 const watch = isWatch;
 const devtool = isDev ? '#source-map' : isTest ? 'eval' : null;
@@ -47,6 +46,7 @@ if (isDist) {
 }
 
 if (isTest) {
+  base.entry = null;
   // plugins.push(new webpack.IgnorePlugin(/\.(css|sass)$/));
   plugins.push(new webpack.BannerPlugin('require("source-map-support").install();', { raw: true, entryOnly: false }));
 }
@@ -63,4 +63,4 @@ if (isDll) {
   });
 }
 
-module.exports = Object.assign({}, base, {plugins , cache, watch, devtool, entry});
+module.exports = Object.assign({}, base, {plugins , cache, watch, devtool});

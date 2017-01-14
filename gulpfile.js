@@ -3,6 +3,7 @@ const gutil = require('gulp-util');
 
 require('./config/gulp/webpack.task');
 require('./config/gulp/browsersync.task');
+require('./config/gulp/test.task');
 require('./config/gulp/misc.task');
 
 const remind = done => {

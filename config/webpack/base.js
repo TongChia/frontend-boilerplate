@@ -1,4 +1,4 @@
-// const path = require('path');
+const path = require('path');
 const env = process.env.NODE_ENV || 'development';
 const config = require(`../${env}.js`);
 
@@ -62,12 +62,12 @@ module.exports = {
   },
   resolve: {
     alias: {
-      actions: './src/actions/',
-      components: './src/components/',
-      sources: './src/sources/',
-      stores: './src/stores/',
-      styles: './src/styles/',
-      config: `./config/${env}.js`,
+      actions: path.join(config.src, 'actions'),
+      components: path.join(config.src, 'components'),
+      sources: path.join(config.src, 'sources'),
+      stores: path.join(config.src, 'stores'),
+      styles: path.join(config.src, 'styles'),
+      CONFIG: path.join(config.root, `config/${env}.js`),
       'react/lib/ReactMount': 'react-dom/lib/ReactMount'
     },
   },

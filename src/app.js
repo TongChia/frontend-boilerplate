@@ -1,14 +1,12 @@
 import './index.scss';
+import * as config from 'CONFIG';
 
-const obj = {
-  foo: 'bar',
-  bar: 'foo',
-  msg: 'Hello! Tong~'
-};
-
-function hello () {
-  const ele = document.getElementById('hello');
-  ele.innerHTML = obj.msg;
+function title () {
+  const app = document.getElementById('app');
+  if (app)
+    app.innerHTML = config.appName;
+  else
+    document.getElementsByTagName('body')[0].append(config.appName);
 }
 
-hello();
+title();

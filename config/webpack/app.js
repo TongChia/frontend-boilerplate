@@ -3,17 +3,19 @@ const webpack = require('webpack');
 const cssnext = require('postcss-cssnext');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const base = require('./base');
-const isDll = !!process.env.DLL_FILES;
 const env = process.env.NODE_EMV || 'development';
 const config = require(`../${env}.js`);
-const dllFiles = isDll ? process.env.DLL_FILES.split(',') : [];
 const isDev = env === 'development';
 const isDist = env === 'production';
 const isTest = env === 'test';
+const isWatch = !!process.env.WATCH;
+const isDll = !!process.env.DLL_FILES;
+const dllFiles = isDll ? process.env.DLL_FILES.split(',') : [];
 
+const entry = base.entry;
 const cache = isDev;
-const watch = isDev;
-const devtool = isDev ? '#source-map' : isTest ? 'eval' : 'source-map';
+const watch = isWatch;
+const devtool = isDev ? '#source-map' : isTest ? 'eval' : null;
 const plugins = [
   new webpack.optimize.OccurrenceOrderPlugin(),
   // new webpack.WatchIgnorePlugin('.tmp/'),
@@ -44,16 +46,21 @@ if (isDist) {
   plugins.push(new webpack.optimize.AggressiveMergingPlugin());
 }
 
+if (isTest) {
+  // plugins.push(new webpack.IgnorePlugin(/\.(css|sass)$/));
+  plugins.push(new webpack.BannerPlugin('require("source-map-support").install();', { raw: true, entryOnly: false }));
+}
+
 if (isDll) {
   dllFiles.forEach(dll => {
     const manifest = path.join(config.out, dll.replace('.dll.js', '.manifest.json'));
     plugins.unshift(
       new webpack.DllReferencePlugin({
-        context: '.',
+        context: config.src,
         manifest,
       })
     );
   });
 }
 
-module.exports = Object.assign({}, base, {plugins , cache, watch, devtool});
+module.exports = Object.assign({}, base, {plugins , cache, watch, devtool, entry});

@@ -23,7 +23,7 @@ module.exports = Object.assign({}, base, {
     new webpack.DllPlugin({
       name: '[name]_[hash]',
       path: `.tmp/${defaultOutName}.manifest.json`,
-      context: '.',
+      context: config.src,
     }),
   ],
   devtool: isDev ? 'source-map' : ''

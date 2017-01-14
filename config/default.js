@@ -1,11 +1,13 @@
 const path = require('path');
+const root = path.resolve(__dirname, '../');
 
 module.exports = {
   appName: 'frontend boilerplate',
   api: '/api',
   port: process.env.PORT || 9000,
-  src: path.resolve(__dirname, '../src'),
-  out: path.resolve(__dirname, '../.tmp'),
+  root,
+  src: path.join(root, 'src'),
+  out: path.join(root, '.tmp'),
 
   lang: 'en',
 

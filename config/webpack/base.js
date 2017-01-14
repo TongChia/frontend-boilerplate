@@ -78,4 +78,5 @@ module.exports = {
     path: config.out,
   },
   cache: false,
+  watch: false,
 };

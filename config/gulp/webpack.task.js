@@ -57,7 +57,14 @@ const vendorCompiler = done => {
     return done();
   }
 
-  const compiler = webpack(Object.assign(dllCnf, {entry}));
+  const compiler = webpack(Object.assign(dllCnf, {entry}), (err, stats) => {
+    if (err)
+      gutil.log(gutil.colors.red('Webpack'), err.toString());
+
+    process.env.DLL_FILES = dllFiles.join(',');
+    gutil.log(`Consoled '${cyan('webpack:vendor')}'...\r\n`, stats.toString(webpackLogOptions));
+    done();
+  });
 
   compiler.plugin('after-emit', (compilation, callback) => {
     Object.keys(compilation.assets).forEach(function (outName) {
@@ -67,19 +74,6 @@ const vendorCompiler = done => {
     });
     callback();
   });
-
-  compiler.plugin('done', stats => {
-    process.env.DLL_FILES = dllFiles.join(',');
-    gutil.log(`Consoled '${cyan('webpack:vendor')}'...\r\n`, stats.toString(webpackLogOptions));
-    done();
-  });
-
-  compiler.plugin('failed', err => {
-    if (err)
-      gutil.log(red('webpack:vendor'), err.toString());
-  });
-
-  compiler.run();
 };
 
 const appCompiler = done => {

@@ -1,6 +1,16 @@
+const fs = require('fs');
 const path = require('path');
 const env = process.env.NODE_ENV || 'development';
 const config = require(`../${env}.js`);
+
+const autoAliasSrcDirs = () => {
+  const dirs = fs.readdirSync(config.src).filter(name => fs.statSync(path.join(config.src, name)).isDirectory());
+  const alias = {};
+  dirs.forEach(dir => {
+    alias[`$${dir}`] = path.join(config.src, dir);
+  });
+  return alias;
+};
 
 module.exports = {
   module: {
@@ -19,19 +29,19 @@ module.exports = {
         loader: 'style-loader!css-loader!postcss-loader'
       },
       {
-        test: /\.sass/,
+        test: /\.sass$/,
         loader: 'style-loader!css-loader!postcss-loader!sass-loader?outputStyle=expanded&indentedSyntax'
       },
       {
-        test: /\.scss/,
+        test: /\.scss$/,
         loader: 'style-loader!css-loader!postcss-loader!sass-loader?outputStyle=expanded'
       },
       {
-        test: /\.less/,
+        test: /\.less$/,
         loader: 'style-loader!css-loader!postcss-loader!less-loader'
       },
       {
-        test: /\.styl/,
+        test: /\.styl$/,
         loader: 'style-loader!css-loader!postcss-loader!stylus-loader'
       },
       {
@@ -61,15 +71,13 @@ module.exports = {
     ]
   },
   resolve: {
-    alias: {
-      actions: path.join(config.src, 'actions'),
-      components: path.join(config.src, 'components'),
-      sources: path.join(config.src, 'sources'),
-      stores: path.join(config.src, 'stores'),
-      styles: path.join(config.src, 'styles'),
-      CONFIG: path.join(config.root, `config/${env}.js`),
-      'react/lib/ReactMount': 'react-dom/lib/ReactMount'
-    },
+    alias: Object.assign({},
+      autoAliasSrcDirs(),
+      {
+        '$config': path.join(config.root, `config/${env}.js`),
+        'react/lib/ReactMount': 'react-dom/lib/ReactMount'
+      }
+    ),
   },
   entry: {
     'app': `${config.src}/app.js`,

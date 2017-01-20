@@ -1,5 +1,5 @@
 import './index.scss';
-import * as config from 'CONFIG';
+import * as config from '$config';
 
 function title () {
   const app = document.getElementById('app');

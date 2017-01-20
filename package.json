@@ -6,9 +6,11 @@
   "scripts": {
     "start": "npm run serve",
     "serve": "gulp serve",
+    "test": "gulp test:watch",
     "build": "cross-env NODE_ENV=production gulp webpack",
     "clean": "gulp clean",
     "lint": "gulp eslint",
+    "karma": "karma start",
     "gulp": "gulp",
     "webpack": "webpack"
   },

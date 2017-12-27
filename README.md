@@ -7,7 +7,7 @@ Maintainer: [Tong Chia](http://www.tongchia.me)
 [<img src="https://s3-us-west-2.amazonaws.com/svgporn.com/logos/babel.svg" width="384" alt="babel"/>](https://babeljs.io/)  
 #### Compiler & Helper  
 [<img src="https://s3-us-west-2.amazonaws.com/svgporn.com/logos/gulp.svg" width="84" alt="gulp"/>](http://gulpjs.com/)
-[<img src="https://s3-us-west-2.amazonaws.com/svgporn.com/logos/webpack.svg" width="160" alt="webpack"/>](http://webpack.github.io/)
+[<img src="https://cdn.svgporn.com/logos/webpack.svg" width="160" alt="webpack"/>](http://webpack.github.io/)
 [<img src="https://s3-us-west-2.amazonaws.com/svgporn.com/logos/postcss.svg" width="164" alt="postcss"/>](https://github.com/postcss/postcss)
 [<img src="https://s3-us-west-2.amazonaws.com/svgporn.com/logos/browsersync.svg" width="128" alt="gulp"/>](http://www.browsersync.io/)  
 #### Testing

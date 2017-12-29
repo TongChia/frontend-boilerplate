@@ -20,6 +20,6 @@ gulp.task('watch', done => {
   done();
 });
 
-gulp.task('serve', gulp.series('clean', 'lint', 'browsersync', 'watch', 'webpack'));
+gulp.task('serve', gulp.series('clean', 'lint', 'webpack', 'browsersync', 'watch'));
 
 gulp.task('default', gulp.series('serve'));

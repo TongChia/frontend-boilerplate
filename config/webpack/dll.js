@@ -9,7 +9,7 @@ const defaultOutName = '[name].[hash:8]';
 module.exports = Object.assign({}, base, {
   entry: config.dllEntry,
   output: {
-    path: (env == 'production') ? 'build' : '.tmp',
+    path: config.out,
     // filename: (env == 'dev') ? '[name].bundle.js' : '[name].[hash:8].js',
     filename: `${defaultOutName}.dll.js`,
     library: '[name]_[hash]',

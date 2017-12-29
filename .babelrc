@@ -1,5 +1,10 @@
 {
   "presets": [
-    ["es2015",{ "loose": true, "modules": false }]
-  ]
+    ["@babel/preset-env", {
+      "targets": {"node": "current"}
+    }],
+    "@babel/preset-stage-0",
+    "@babel/preset-react"
+  ],
+  "plugins": []
 }

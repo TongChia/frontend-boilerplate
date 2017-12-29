@@ -23,7 +23,9 @@ const plugins = [
     minimize: isDist,
     debug: isDev,
     options: {
-      postcss: () => [cssnext]
+      postcss: {
+        plugins: () => [require('postcss-cssnext')]
+      }
     }
   }),
   new HtmlWebpackPlugin({
@@ -31,10 +33,7 @@ const plugins = [
     lang: config.lang,
     dll: dllFiles,
     hash: isDist,
-    minify: isDist || {
-      removeComments: true,
-      collapseWhitespace: true
-    },
+    minify: isDist,
     template: `${config.src}/index.html`,
     filename: 'index.html',
   })

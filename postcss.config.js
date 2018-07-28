@@ -1,6 +1,6 @@
 module.exports = {
     // parser: 'sugarss',
     plugins: {
-      'postcss-cssnext': {}
+      // 'postcss-preset-env': {}
     }
   };

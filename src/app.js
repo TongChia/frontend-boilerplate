@@ -1,10 +1,15 @@
-import './index.scss';
-import * as config from '$config';
+import './index.css';
+
+const config = CONFIG;
 
 function title () {
   const app = document.getElementById('app');
   if (app)
-    app.innerHTML = config.appName;
+    app.innerHTML = `
+    <h1>
+      ${config.appName}
+    </h1>
+    `;
   else
     document.getElementsByTagName('body')[0].append(config.appName);
 }

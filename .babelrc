@@ -1,7 +1,6 @@
 {
   "presets": [
     ["@babel/env", {
-      "debug": true,
       "useBuiltIns": "entry",
       "modules": false
     }]

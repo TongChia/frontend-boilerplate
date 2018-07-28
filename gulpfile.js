@@ -7,6 +7,7 @@ const PluginError  = require('plugin-error');
 const log          = require('fancy-log');
 const template     = require('gulp-template');
 const webpack      = require('webpack');
+const webpackMerge = require('webpack-merge');
 const webpackConf  = require('./webpack.config');
 const browserSync  = require('browser-sync').create();
 const {DllReferencePlugin, DllPlugin} = webpack;
@@ -14,8 +15,7 @@ const {src, output, vendors} = config;
 
 const manifest = join(output, 'vendor.manifest.json');
 
-const dllConf = {
-  ...webpackConf,
+const dllConf = webpackMerge(webpackConf, {
   devtool: 'module-source-map',
   entry: vendors,
   output: {
@@ -30,17 +30,16 @@ const dllConf = {
       context: src,
     }),
   ]
-};
+});
 
-const appConf = {
-  ...webpackConf,
+const appConf = webpackMerge(webpackConf, {
   plugins: [
     new DllReferencePlugin({
       context: src,
       manifest,
     })
   ]
-};
+});
 
 const clean = () => del(output);
 
@@ -59,30 +58,31 @@ const app = (done) =>
   });
 
 const html = () =>
-  gulp.src(join(src, 'index.html'))
-    .pipe(template({title: config.appName, ...config}))
+  gulp.src(join(src, '*.html'))
+    .pipe(template({dll: fs.existsSync(manifest), title: config.appName, ...config}))
     .pipe(gulp.dest(output));
 
+const watch = (done) => {
+  gulp.watch(join(src, '**/*.js'), app);
+  gulp.watch(join(src, '*.html'), html);
+  done();
+};
+
 const serve = (done) => {
-  const reloadFiles = (path) => browserSync.reload(path.replace(`${output}`, ''));
-  const reloadBrowser = () => browserSync.reload('/');
   browserSync.init({
-    serveStatic: [output, src],
+    server: [output, src],
     // proxy: 'localhost:' + port,
   });
-  gulp.watch(`${output}/*.*`)
-    .on('change', reloadFiles)
-    .on('unlink', reloadBrowser);
-  gulp.watch(join(src, 'index.html'), {delay: 1000})
-    .on('change', () => browserSync.reload('*.html'));
+  browserSync.watch(output).on('change', browserSync.reload);
   return done();
 };
 
 gulp.task('clean', clean);
-gulp.task('webpack:app', app);
-gulp.task('webpack:dll', dll);
+gulp.task('app', app);
+gulp.task('dll', dll);
 gulp.task('html', html);
 gulp.task('serve', serve);
-gulp.task('default', gulp.series(clean, dll, app, serve));
+gulp.task('build', gulp.series(clean, dll, app, html));
+gulp.task('default', gulp.series(clean, dll, app, html, watch, serve));
 
 //TODO: test & zip & cdn

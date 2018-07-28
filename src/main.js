@@ -1,4 +1,4 @@
-import './index.css';
+import './style.css';
 
 const config = CONFIG;
 
@@ -10,8 +10,6 @@ function title () {
       ${config.appName}
     </h1>
     `;
-  else
-    document.getElementsByTagName('body')[0].append(config.appName);
 }
 
 title();

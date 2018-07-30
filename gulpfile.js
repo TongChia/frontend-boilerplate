@@ -63,8 +63,8 @@ const html = () =>
     .pipe(gulp.dest(output));
 
 const watch = (done) => {
-  gulp.watch(join(src, '**/*.js'), app);
-  gulp.watch(join(src, '*.html'), html);
+  gulp.watch([join(src, '**/*'), '!' + join(src, '**/*.html')], app);
+  gulp.watch(join(src, '**/*.html'), html);
   done();
 };
 
@@ -78,11 +78,10 @@ const serve = (done) => {
 };
 
 gulp.task('clean', clean);
-gulp.task('app', app);
-gulp.task('dll', dll);
+gulp.task('webpack:dll', dll);
+gulp.task('webpack:app', app);
 gulp.task('html', html);
-gulp.task('serve', serve);
-gulp.task('build', gulp.series(clean, dll, app, html));
-gulp.task('default', gulp.series(clean, dll, app, html, watch, serve));
+gulp.task('build', gulp.series('clean', 'webpack:dll', 'webpack:app', 'html'));
+gulp.task('default', gulp.parallel('build', watch, serve));
 
 //TODO: test & zip & cdn

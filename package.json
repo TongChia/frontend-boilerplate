@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run serve",
-    "serve": "gulp serve",
-    "clean": "gulp clean",
-    "gulp": "gulp",
+    "serve": "gulp",
     "webpack": "webpack"
   },
   "author": "Tong Chia",
@@ -36,6 +34,7 @@
     "fancy-log": "^1.3.2",
     "gulp": "^4.0.0",
     "gulp-template": "^5.0.0",
+    "html-loader": "^0.5.5",
     "jest": "^23.4.1",
     "node-sass": "^4.9.2",
     "plugin-error": "^1.0.1",
@@ -46,7 +45,5 @@
     "webpack-command": "^0.4.1",
     "webpack-merge": "^4.1.3"
   },
-  "dependencies": {
-    "html-loader": "^0.5.5"
-  }
+  "dependencies": {}
 }

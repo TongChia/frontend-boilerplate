@@ -6,7 +6,7 @@
     }]
   ],
   "plugins": [
-    "@babel/proposal-function-bind",
+    "@babel/plugin-proposal-function-bind",
     "@babel/proposal-nullish-coalescing-operator",
     "@babel/proposal-optional-chaining",
     ["@babel/proposal-decorators", {"legacy": true}],

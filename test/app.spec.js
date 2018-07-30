@@ -1,18 +1,7 @@
-/* global describe, it */
-import chai from 'chai';
-import config from 'CONFIG';
+import config from 'config';
 
-chai.should();
-
-const v = 1 + 1;
-const appName = config.appName;
-
-describe('One mocha test', () => {
-  it('v should be 2', () => {
-    v.should.be.equal(2);
-  });
-
-  it('v should be 2', () => {
-    appName.should.be.equal('frontend boilerplate test');
+describe('APP TEST', () => {
+  test('env should be test', () => {
+    expect(config.env).toBe('test');
   });
 });

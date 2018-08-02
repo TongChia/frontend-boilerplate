@@ -1,5 +1,9 @@
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ConfigWebpackPlugin = require("config-webpack");
 const {src, output, entry, env} = require('config');
+
+const isDev = env === 'development';
+const isProd = env === 'production';
 
 module.exports = {
   mode: env,
@@ -9,20 +13,23 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(html)$/,
-        use: {
-          loader: 'html-loader',
-          options: {
-            attrs: [':data-src']
-          }
-        }
-      },
-      {
         test: /\.(js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
         use: [
-          {loader: 'babel-loader', options: {cacheDirectory: true, sourceMap: true}},
-          // {loader: 'eslint-loader', options: {failOnError: false, failOnWarning: false}}
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true,
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'eslint-loader',
+            options: {
+              failOnError: isDev || isProd,
+              failOnWarning: isProd
+            }
+          }
         ]
       },
       {
@@ -31,27 +38,25 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader!postcss-loader'
+        use: [
+          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader?sourceMap',
+          'postcss-loader'
+        ],
       },
       {
         test: /\.sass$/,
         use: [
-          'style-loader',
+          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader?sourceMap',
           'postcss-loader',
-          {
-            loader: 'sass-loader',
-            options: {
-              outputStyle: 'expanded',
-              indentedSyntax: true,
-            }
-          }
+          'sass-loader?outputStyle=expanded&indentedSyntax'
         ]
       },
       {
         test: /\.scss$/,
         use: [
-          'style-loader',
+          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader?sourceMap',
           'postcss-loader',
           'sass-loader'
@@ -60,7 +65,7 @@ module.exports = {
       {
         test: /\.less$/,
         use: [
-          'style-loader',
+          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader?sourceMap',
           'postcss-loader',
           'less-loader'
@@ -68,11 +73,25 @@ module.exports = {
       },
       {
         test: /\.styl$/,
-        loader: 'style-loader!css-loader!postcss-loader!stylus-loader'
+        use: [
+          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader?sourceMap',
+          'postcss-loader',
+          'stylus-loader'
+        ]
       },
       {
         test: /\.vue$/,
         loader: 'vue-loader'
+      },
+      {
+        test: /\.(html)$/,
+        use: {
+          loader: 'html-loader',
+          options: {
+            attrs: [':data-src']
+          }
+        }
       },
       {
         test: /\.(pug|jade)$/,
@@ -102,6 +121,7 @@ module.exports = {
   },
   plugins: [
     new ConfigWebpackPlugin(),
+    new MiniCssExtractPlugin(),
   ],
   cache: true
 };

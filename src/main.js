@@ -1,3 +1,4 @@
+/*global CONFIG*/
 import './style.css';
 
 const config = CONFIG;

@@ -6,6 +6,7 @@ const {join}       = require('path');
 const PluginError  = require('plugin-error');
 const log          = require('fancy-log');
 const template     = require('gulp-template');
+const ejs          = require('gulp-ejs');
 const webpack      = require('webpack');
 const webpackMerge = require('webpack-merge');
 const webpackConf  = require('./webpack.config');
@@ -58,20 +59,19 @@ const app = (done) =>
   });
 
 const html = () =>
-  gulp.src(join(src, '*.html'))
-    .pipe(template({dll: fs.existsSync(manifest), title: config.appName, ...config}))
+  gulp.src(join(src, '*.ejs'))
+    .pipe(ejs({dll: fs.existsSync(manifest), ...config}, {}, {ext: '.html'}))
     .pipe(gulp.dest(output));
 
 const watch = (done) => {
-  gulp.watch([join(src, '**/*'), '!' + join(src, '**/*.html')], app);
-  gulp.watch(join(src, '**/*.html'), html);
+  gulp.watch([join(src, '**/*'), '!' + join(src, '**/*.html')], gulp.series('webpack:app'));
+  gulp.watch(join(src, '**/*.html'), gulp.series('html'));
   done();
 };
 
 const serve = (done) => {
   browserSync.init({
     server: [output, src],
-    // proxy: 'localhost:' + port,
   });
   browserSync.watch(output).on('change', browserSync.reload);
   return done();
@@ -82,6 +82,6 @@ gulp.task('webpack:dll', dll);
 gulp.task('webpack:app', app);
 gulp.task('html', html);
 gulp.task('build', gulp.series('clean', 'webpack:dll', 'webpack:app', 'html'));
-gulp.task('default', gulp.parallel('build', watch, serve));
+gulp.task('default', gulp.series('build', watch, serve));
 
 //TODO: test & zip & cdn

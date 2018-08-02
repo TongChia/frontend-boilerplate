@@ -5,7 +5,6 @@ const del          = require('del');
 const {join}       = require('path');
 const PluginError  = require('plugin-error');
 const log          = require('fancy-log');
-const template     = require('gulp-template');
 const ejs          = require('gulp-ejs');
 const webpack      = require('webpack');
 const webpackMerge = require('webpack-merge');

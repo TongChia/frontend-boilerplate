@@ -3,84 +3,80 @@ const fs           = require('fs');
 const gulp         = require('gulp');
 const del          = require('del');
 const {join}       = require('path');
-const PluginError  = require('plugin-error');
 const log          = require('fancy-log');
 const ejs          = require('gulp-ejs');
 const webpack      = require('webpack');
-const webpackMerge = require('webpack-merge');
-const webpackConf  = require('./webpack.config');
 const browserSync  = require('browser-sync').create();
+const {plugins, ...baseConf}  = require('./webpack.config');
 const {DllReferencePlugin, DllPlugin} = webpack;
 const {src, output, vendors} = config;
 
 const manifest = join(output, 'vendor.manifest.json');
-
-const dllConf = webpackMerge(webpackConf, {
-  devtool: 'module-source-map',
-  entry: vendors,
-  output: {
-    path: output,
-    filename: 'vendor.dll.js',
-    library: 'vendor_dll_[hash:8]',
-  },
-  plugins: [
-    new DllPlugin({
-      name: 'vendor_dll_[hash:8]',
-      path: manifest,
-      context: src,
-    }),
-  ]
+const htmlFile = join(src, '*.?(ejs|html)');
+const bundler = (config, done) => webpack(config, (err, stats) => {
+  if(err) return done(err);
+  log.info(`[webpack:${config.name}]\n${stats.toString({colors: true, warnings: false})}`);
+  return done();
 });
 
-const appConf = fs.existsSync(manifest) ?
-  webpackMerge(webpackConf, {
+gulp.task('clean', () => del(output));
+
+gulp.task('webpack:dll', (done) => !vendors ? done() :
+  bundler({
+    ...baseConf,
+    name: 'dll',
+    devtool: 'cheap-module-source-map',
+    entry: vendors,
+    output: {
+      path: output,
+      filename: 'vendor.dll.js',
+      library: 'vendor_dll_[hash:8]',
+    },
     plugins: [
+      ...plugins,
+      new DllPlugin({
+        name: 'vendor_dll_[hash:8]',
+        path: manifest,
+      }),
+    ]
+  }, done)
+);
+
+gulp.task('webpack:app', (done) => {
+  let exists = fs.existsSync(manifest);
+  return bundler(exists ? {
+    ...baseConf,
+    plugins: [
+      ...plugins,
       new DllReferencePlugin({
-        context: src,
         manifest,
       })
     ]
-  }) : webpackConf;
+  } : baseConf, done);
+});
 
-const clean = () => del(output);
+gulp.task('html', () =>
+  gulp.src(htmlFile)
+    .pipe(ejs({dll: fs.existsSync(manifest), config}, {}, {ext: '.html'}))
+    .pipe(gulp.dest(output))
+);
 
-const dll = (done) => vendors ?
-  webpack(dllConf, (err, stats) => {
-    if(err) throw new PluginError('webpack:dll', err);
-    log.info(`[webpack:dll]\n${stats.toString({colors: true})}`);
-    done();
-  }) : done();
+gulp.task('build', gulp.series('clean', 'webpack:dll', 'webpack:app', 'html'));
 
-const app = (done) =>
-  webpack(appConf, (err, stats) => {
-    if(err) throw new PluginError('webpack:app', err);
-    log.info(`[webpack:app]\n${stats.toString({colors: true})}`);
-    done();
-  });
-
-const html = () =>
-  gulp.src(join(src, '*.?(ejs|html)'))
-    .pipe(ejs({dll: fs.existsSync(manifest), ...config}, {}, {ext: '.html'}))
-    .pipe(gulp.dest(output));
-
-const watch = (done) => {
-  gulp.watch(join(src, '**/*.?(js|jsx|vue)'), gulp.series(app));
-  gulp.watch(join(src, '**/*.html'), gulp.series('html'));
-  done();
-};
-
-const serve = (done) => {
+gulp.task('serve', (done) => {
   browserSync.init({
     server: [output, src],
   });
   browserSync.watch(output).on('change', browserSync.reload);
   return done();
-};
+});
 
-gulp.task('clean', clean);
-gulp.task('html', html);
-gulp.task('webpack', gulp.series(dll, app));
-gulp.task('build', gulp.series('clean', 'webpack', 'html'));
-gulp.task('default', gulp.series('build', watch, serve));
+gulp.task('watch', (done) => {
+  gulp.watch([join(src, '**/*'), '!' + htmlFile], gulp.series('webpack:app'));
+  gulp.watch(htmlFile, gulp.series('html'));
+  done();
+});
+
+gulp.task('default', gulp.series('build', 'serve', 'watch'));
 
 //TODO: test & zip & cdn

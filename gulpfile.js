@@ -52,12 +52,12 @@ gulp.task('webpack:app', (done) => {
         manifest,
       })
     ]
-  } : baseConf, done);
+  } : {...baseConf, plugins}, done);
 });
 
 gulp.task('html', () =>
   gulp.src(htmlFile)
-    .pipe(ejs({dll: fs.existsSync(manifest), config}, {}, {ext: '.html'}))
+    .pipe(ejs({dll: fs.existsSync(manifest), ...config}, {}, {ext: '.html'}))
     .pipe(gulp.dest(output))
 );
 

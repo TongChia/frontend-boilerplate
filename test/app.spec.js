@@ -1,7 +1,8 @@
 import config from 'config';
+import {expect} from 'chai';
 
 describe('APP TEST', () => {
-  test('env should be test', () => {
-    expect(config.env).toBe('test');
+  it('env should be test', () => {
+    expect(config.env).to.equal('test');
   });
 });

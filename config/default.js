@@ -17,5 +17,7 @@ module.exports = {
   // vendors: ['lodash'],
   proxies: [
     {path: '/api', url: 'http://localhost:3001/api/v1'},
-  ]
+  ],
+
+  browsers: 'last 2 Chrome versions'
 };

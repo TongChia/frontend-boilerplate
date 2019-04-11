@@ -1,7 +1,5 @@
-/*global CONFIG*/
 import './style.css';
-
-const config = CONFIG;
+import config from 'config';
 
 function title () {
   const app = document.getElementById('app');

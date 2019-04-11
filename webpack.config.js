@@ -1,6 +1,6 @@
+const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ConfigWebpackPlugin = require("config-webpack");
-const {src, output, entry, env} = require('config');
+const {src, output, entry, env, ...config} = require('config');
 
 const isDev = env === 'development';
 const isProd = env === 'production';
@@ -26,7 +26,7 @@ module.exports = {
           {
             loader: 'eslint-loader',
             options: {
-              failOnError: isDev || isProd,
+              failOnError: true,
               failOnWarning: isProd
             }
           }
@@ -119,9 +119,14 @@ module.exports = {
   output: {
     path: output
   },
+  node: {
+    fs: 'empty',
+  },
   plugins: [
-    new ConfigWebpackPlugin(),
     new MiniCssExtractPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.NODE_CONFIG': JSON.stringify(JSON.stringify(config)),
+    }),
   ],
   cache: true
 };
